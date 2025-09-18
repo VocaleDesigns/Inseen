@@ -3,35 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Immersive Text Editor</title>
-  <link rel="stylesheet" href="editor.css">
+  <title>Revolutionized Text Editor</title>
+  <link rel="stylesheet" href="rev_editor.css">
 </head>
 <body>
-  <div class="editor-container">
+  <div class="editor-wrapper">
+
+    <!-- Toolbar -->
     <div class="toolbar">
-      <button data-action="bold"><b>B</b></button>
-      <button data-action="italic"><i>I</i></button>
-      <button data-action="underline"><u>U</u></button>
-      <button data-action="h1">H1</button>
-      <button data-action="h2">H2</button>
-      <button data-action="unordered-list">• List</button>
-      <button data-action="ordered-list">1. List</button>
-      <button data-action="blockquote">❝</button>
-      <button data-action="code-block">&lt;/&gt;</button>
-      <button data-action="typewriter-toggle">✎ Typewriter</button>
-      <button data-action="dark-mode-toggle">🌙 Dark</button>
-      <button data-action="download">⬇ Download</button>
+      <div class="toolbar-group">
+        <button class="icon-btn" data-action="bold" title="Bold"><b>B</b></button>
+        <button class="icon-btn" data-action="italic" title="Italic"><i>I</i></button>
+        <button class="icon-btn" data-action="underline" title="Underline"><u>U</u></button>
+        <div class="dropdown">
+          <button class="icon-btn" title="Font">Font ▼</button>
+          <div class="dropdown-content">
+            <span data-font="Arial">Arial</span>
+            <span data-font="Georgia">Georgia</span>
+            <span data-font="Courier New">Courier New</span>
+            <span data-font="Verdana">Verdana</span>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="icon-btn" title="Font Size">Size ▼</button>
+          <div class="dropdown-content">
+            <span data-size="14px">14</span>
+            <span data-size="16px">16</span>
+            <span data-size="18px">18</span>
+            <span data-size="20px">20</span>
+            <span data-size="24px">24</span>
+            <span data-size="28px">28</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-group">
+        <button class="icon-btn" data-action="h1" title="Heading 1">H1</button>
+        <button class="icon-btn" data-action="h2" title="Heading 2">H2</button>
+        <button class="icon-btn" data-action="blockquote" title="Blockquote">❝</button>
+        <button class="icon-btn" data-action="code-block" title="Code Block">&lt;/&gt;</button>
+      </div>
+
+      <div class="toolbar-group">
+        <button class="icon-btn" data-action="align-left" title="Align Left">≡</button>
+        <button class="icon-btn" data-action="align-center" title="Align Center">≡</button>
+        <button class="icon-btn" data-action="align-right" title="Align Right">≡</button>
+      </div>
+
+      <div class="toolbar-group">
+        <button class="icon-btn" data-action="typewriter-toggle" title="Typewriter Mode">✎</button>
+        <button class="icon-btn" data-action="dark-mode-toggle" title="Dark Mode">🌙</button>
+        <button class="icon-btn" data-action="download" title="Download">⬇</button>
+      </div>
     </div>
 
-    <div class="writing-area" contenteditable="true" spellcheck="true" id="editor">
-      Start writing here...
+    <!-- Writing Area -->
+    <div class="editor-area" contenteditable="true" spellcheck="true" id="editor">
+      Start writing your masterpiece...
     </div>
 
+    <!-- Status Bar -->
     <div class="status-bar">
       <span id="word-count">Words: 0</span>
       <span id="char-count">Chars: 0</span>
       <span id="reading-time">Reading: 0 min</span>
     </div>
+
   </div>
 
   <script src="editor.js"></script>
