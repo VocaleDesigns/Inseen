@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Immersive Text Editor</title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <div class="editor-container">
+    <div class="toolbar">
+      <button data-action="bold"><b>B</b></button>
+      <button data-action="italic"><i>I</i></button>
+      <button data-action="underline"><u>U</u></button>
+      <button data-action="h1">H1</button>
+      <button data-action="h2">H2</button>
+      <button data-action="unordered-list">• List</button>
+      <button data-action="ordered-list">1. List</button>
+      <button data-action="blockquote">❝</button>
+      <button data-action="code-block">&lt;/&gt;</button>
+      <button data-action="typewriter-toggle">✎ Typewriter</button>
+      <button data-action="dark-mode-toggle">🌙 Dark</button>
+      <button data-action="download">⬇ Download</button>
+    </div>
+
+    <div class="writing-area" contenteditable="true" spellcheck="true" id="editor">
+      Start writing here...
+    </div>
+
+    <div class="status-bar">
+      <span id="word-count">Words: 0</span>
+      <span id="char-count">Chars: 0</span>
+      <span id="reading-time">Reading: 0 min</span>
+    </div>
+  </div>
+
+  <script src="editor.js"></script>
+</body>
+</html>
