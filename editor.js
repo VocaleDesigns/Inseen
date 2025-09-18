@@ -1,10 +1,10 @@
-// editor.js - Functionality for Immersive Text Editor
-
 const editor = document.getElementById('editor');
 const wordCount = document.getElementById('word-count');
 const charCount = document.getElementById('char-count');
 const readingTime = document.getElementById('reading-time');
-const toolbarButtons = document.querySelectorAll('.toolbar button');
+const toolbarButtons = document.querySelectorAll('.toolbar .icon-btn');
+const fontOptions = document.querySelectorAll('[data-font]');
+const sizeOptions = document.querySelectorAll('[data-size]');
 
 let typewriterMode = false;
 let darkMode = false;
@@ -14,16 +14,17 @@ toolbarButtons.forEach(button => {
   button.addEventListener('click', () => {
     const action = button.getAttribute('data-action');
 
-    switch(action) {
-      case 'bold': document.execCommand('bold'); break;
-      case 'italic': document.execCommand('italic'); break;
-      case 'underline': document.execCommand('underline'); break;
-      case 'h1': document.execCommand('formatBlock', false, 'H1'); break;
-      case 'h2': document.execCommand('formatBlock', false, 'H2'); break;
-      case 'unordered-list': document.execCommand('insertUnorderedList'); break;
-      case 'ordered-list': document.execCommand('insertOrderedList'); break;
-      case 'blockquote': document.execCommand('formatBlock', false, 'BLOCKQUOTE'); break;
-      case 'code-block': document.execCommand('formatBlock', false, 'PRE'); break;
+    switch(action){
+      case 'bold': applyStyle('bold'); break;
+      case 'italic': applyStyle('italic'); break;
+      case 'underline': applyStyle('underline'); break;
+      case 'h1': applyBlock('H1'); break;
+      case 'h2': applyBlock('H2'); break;
+      case 'blockquote': applyBlock('BLOCKQUOTE'); break;
+      case 'code-block': applyBlock('PRE'); break;
+      case 'align-left': applyAlign('left'); break;
+      case 'align-center': applyAlign('center'); break;
+      case 'align-right': applyAlign('right'); break;
       case 'typewriter-toggle': toggleTypewriterMode(); break;
       case 'dark-mode-toggle': toggleDarkMode(); break;
       case 'download': downloadContent(); break;
@@ -31,27 +32,50 @@ toolbarButtons.forEach(button => {
   });
 });
 
-// Typewriter mode toggle
-function toggleTypewriterMode() {
+// Font & Size dropdown functionality
+fontOptions.forEach(option => {
+  option.addEventListener('click', () => {
+    document.execCommand('fontName', false, option.getAttribute('data-font'));
+  });
+});
+
+sizeOptions.forEach(option => {
+  option.addEventListener('click', () => {
+    document.execCommand('fontSize', false, 7); // workaround
+    const selection = window.getSelection();
+    if(selection.rangeCount > 0){
+      const span = document.createElement('span');
+      span.style.fontSize = option.getAttribute('data-size');
+      span.textContent = selection.toString();
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(span);
+    }
+  });
+});
+
+// Apply inline styles
+function applyStyle(style){ document.execCommand(style); }
+function applyBlock(tag){ document.execCommand('formatBlock', false, tag); }
+function applyAlign(direction){ document.execCommand('justify' + direction); }
+
+// Typewriter mode
+function toggleTypewriterMode(){
   typewriterMode = !typewriterMode;
-  if(typewriterMode){
-    editor.classList.add('typewriter-mode');
-    editor.scrollTop = editor.scrollHeight / 2;
-  } else {
-    editor.classList.remove('typewriter-mode');
-  }
+  editor.classList.toggle('typewriter-mode', typewriterMode);
+  if(typewriterMode){ editor.scrollTop = editor.scrollHeight / 2; }
 }
 
-// Dark mode toggle
+// Dark mode
 function toggleDarkMode(){
   darkMode = !darkMode;
   document.body.classList.toggle('dark-mode', darkMode);
 }
 
-// Download content as TXT
+// Download editor content
 function downloadContent(){
   const text = editor.innerText;
-  const blob = new Blob([text], { type: 'text/plain' });
+  const blob = new Blob([text], {type:'text/plain'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'document.txt';
@@ -59,22 +83,24 @@ function downloadContent(){
   URL.revokeObjectURL(a.href);
 }
 
-// Real-time word/char/reading time
+// Real-time stats and typewriter auto-scroll
 editor.addEventListener('input', () => {
   const text = editor.innerText;
-  const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
-  const chars = text.replace(/\s/g, '').length;
-  const minutes = Math.ceil(words / 200); // 200 WPM average reading
+  const words = text.trim().split(/\s+/).filter(w => w.length>0).length;
+  const chars = text.replace(/\s/g,'').length;
+  const minutes = Math.ceil(words/200);
   wordCount.innerText = `Words: ${words}`;
   charCount.innerText = `Chars: ${chars}`;
   readingTime.innerText = `Reading: ${minutes} min`;
 
-  // Auto-scroll for typewriter mode
   if(typewriterMode){
-    const caret = window.getSelection().getRangeAt(0).getBoundingClientRect();
-    const editorRect = editor.getBoundingClientRect();
-    if(caret.bottom > editorRect.bottom || caret.top < editorRect.top){
-      editor.scrollTop += caret.bottom - editorRect.bottom + 20;
+    const sel = window.getSelection();
+    if(sel.rangeCount){
+      const caret = sel.getRangeAt(0).getBoundingClientRect();
+      const editorRect = editor.getBoundingClientRect();
+      if(caret.bottom > editorRect.bottom || caret.top < editorRect.top){
+        editor.scrollTop += caret.bottom - editorRect.bottom + 20;
+      }
     }
   }
 });
